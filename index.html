@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>Oui Pouet</title>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <div class="background">
+            <div class="game-container">
+                <div class="panel">
+                    <div class="panel-button" id="inscription">Inscription</div>
+                    <div class="panel-button" id="connecter">Se connecter</div>
+                    <div class="panel-button" id="collection">Ma collection</div>
+                </div>
+                <div class="interface">
+                    <div class="btn-achat">Pas assez de Pouets</div>   
+                    <div class="game">
+                        <div class="pouet-display">Clique sur le Pouet pour commencer...</div>
+                        <img src="./images/klaxon.png" class="clicker">
+                    </div>
+                </div>
+                <div class="panel">
+
+                </div>
+            </div>
+            <div class="picked-card-container">    
+                <img class="radial-light" src="./images/radial_light2.png">
+                <img class="picked-card" src="./images/cards/back.png">
+            </div>
+            <div class="inscription-frame">
+                <div class="inscription-container">
+                    <form name="Inscription" class="form-inscription">
+                        <input type="text" name="Pseudo" placeholder="Pseudo" required id="cnx-Pseudo"><br>
+                        <input type="password" name="pwd" placeholder="Mot de Passe" required><br>
+                        <input type="password" name="pwd-confirmation" placeholder="Confirmer le mot de passe" required><br>
+                    </form>
+                    <p id="msg-inscription">Créé ton compte et sauve ta progression !</p>
+                    <img id="btn-inscription" src="./images/poutre.png" alt="la poutre">
+                </div>
+            </div>
+            <div class="progress-bar"></div>
+        </div>
+        <script src="./script.js"></script>
+    </body>
+</html>
