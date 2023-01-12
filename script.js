@@ -29,14 +29,15 @@ document.forms["Inscription"]["pwd-confirmation"].addEventListener("input", func
 });
 //////
 
-document.querySelector('#btn-inscription').onclick = function(){connexion()};
+document.querySelector('.btn-inscription').onclick = function(){connexion()};
 document.forms["Inscription"]["pwd-confirmation"].addEventListener("input", function(){
     if(this.value != document.forms["Inscription"]["pwd"].value){
         document.querySelector("#msg-inscription").innerHTML = "Par contre frérot fait un effort met le même mot passe";
-        document.querySelector("#btn-inscription").style.visibility = "hidden";
+        document.querySelector(".btn-inscription").style.visibility = "hidden";
     } else {
         document.querySelector("#msg-inscription").innerHTML = "voila bravo fils de pioute clique sur la poutre pour créer ton compte"; 
-        document.querySelector("#btn-inscription").style.visibility = "visible";
+        document.querySelector(".form-button").disabled = false;
+        document.querySelector(".btn-inscription").style.visibility = "visible";
     }
 });
 
@@ -245,7 +246,7 @@ async function pickACard(){
         document.querySelector(".picked-card").style.visibility = "visible";
         isPicked = 1;        
     } else if(isPicked == 1){ // La carte est retournée
-        var card = "./images/cards/"+getRandomIntInclusive(1, 9)+".png";
+        var card = "./images/cards/"+getRandomIntInclusive(1, 12)+".png";
         for(var i = 1057; i >= 0; i-= 200){
             document.querySelector(".picked-card").style.aspectRatio = i+"/1465";
             await delay(5);
@@ -297,19 +298,14 @@ function connexion(){
     console.log(logPseudo);
     console.log(logPwd);
     console.log(logPwdConfirmation);
-    fetch("./data.json")
-        .then(res=>res.json())
-        .then(data=> console.log(JSON.stringify(data)))
-    var data = {
-        logPseudo:{
-            pwd: logPwd,
-            pouets: 0,
-            cards_owned: []
-        }
-    };
-    var jsonData = JSON.stringify(data);
-    fetch("./data.json", {
-        method: 'PUT',
-        body: jsonData
-    })
+    console.log("mes couilles");
+    
+
+    fetch('/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+          },
+        body: JSON.stringify({ id: logPseudo, pwd: logPwd })
+    }).then(console.log(response))
 }

@@ -1,19 +1,33 @@
-let http = require('http');
-let fs = require('fs');
-let url = require('url');
+/* partie lecture/ecriture fonctionelle
 
-let server = http.createServer();
-server.on('request', (request, response)=>{
-    console.log('il y a eu une requete');
-    fs.readFile('./index.html', (err, data) =>{
-        if (err){
-            response.writeHead(404)
-            response.end("ce fichier n'existe pas")
-        }
-        response.writeHead(200, {'content-type': 'text/html; charset=utf-8'});
-        console.log(url.parse(request.url, true));
-        response.end(data);
-    })
-})
+const {readFileSync, writeFileSync} = require("fs");
 
-server.listen(8080);
+const data = JSON.parse(readFileSync("./data.json", 'utf-8'));
+console.log(data.Tormod.pwd);
+
+const {Tormod} = JSON.parse(readFileSync("./data.json", 'utf-8'));
+console.log(Tormod);
+
+data.Tormod.pouets = 169;
+
+const objectToJson = JSON.stringify(data);
+console.log(objectToJson);
+
+writeFileSync('./data.json', objectToJson);*/
+/////////////////////////////////////////////////////////////////
+
+const express = require('express');
+const app = express();
+const bodyParser = require("body-parser");
+
+app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.json());
+
+app.listen(3000, ()=>{
+    console.log('Server up');
+});
+
+app.post('/1', (request, response) =>{
+    console.log(request.body);
+    response.send("e");
+});
