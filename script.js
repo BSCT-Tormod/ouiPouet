@@ -10,12 +10,23 @@ var nbTirages = 0;
 var logPseudo = "";
 var logPwd = "";
 var logPwdConfirmation ="";
-
+var sDrop = 0;
+var ssDrop = 0;
+var cardsOwned = [];
 console.log("hello world le programme");
 document.querySelector(".game").onclick = function(){increment()};
 document.querySelector(".btn-achat").onclick = function(){tirage()};
 document.querySelector(".picked-card-container").onclick = function(){pickACard()};
 document.querySelector("#inscription").onclick = function(){inscriptionStyle()};
+document.querySelector("#collection").onclick = function(){collection()};
+
+////// Change la couleur de l'ombre tout seul (comme un grand)
+window.i = 0;
+setInterval(() => {
+    window.i += 1;
+    document.querySelector(".game").style.boxShadow = "0 0 75px "+autoHue();
+}, 200);
+//////
 
 ////// Récupère les valeurs dans les champs sans les faires passer par l'url
 document.forms["Inscription"]["Pseudo"].addEventListener("input", function(){
@@ -45,7 +56,7 @@ function increment(){
     cpt+=1;
     document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
     progressBar.style.width = progressBarLength+"%";
-    document.querySelector(".game").style.boxShadow = "0 0 80px "+autoHue();
+    // document.querySelector(".game").style.boxShadow = "0 0 80px "+autoHue();
     autoStyleTirage();
     
 }
@@ -163,13 +174,15 @@ function tirage(){
         
     }else if(cpt >= 25  && cpt < 50){ // Tirage
         if(cpt==25){resetProgressBar();}
-        cpt -= 25;     
+        cpt -= 25;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         progressBarLength -= 4;
         progressBar.style.width = progressBarLength +"%";
         progressBarLength += 4;
         nbTirages = 1;
         resetBtnAchat();
+        sDrop = 0;
+        ssDrop = 0;
         pickACard();
         
     } else if(cpt >= 50 && cpt < 100){ // Super Tirage
@@ -177,12 +190,10 @@ function tirage(){
         cpt -= 50;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         resizeProgressBar();
-        // progressBar.style.width = (cpt*4)+"%";
-        // progressBarLength -= 2;
-        // progressBar.style.width = progressBarLength +"%";
-        // progressBarLength += 2;
-        nbTirages = 3;
         resetBtnAchat();
+        nbTirages = 3;
+        sDrop = 5;
+        ssDrop = 0;
         pickACard();
         
     } else if(cpt >= 100 && cpt < 200){ // Méga Super Tirage
@@ -190,11 +201,10 @@ function tirage(){
         cpt -= 100;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         resizeProgressBar();
-        // progressBarLength -= 1;
-        // progressBar.style.width = progressBarLength +"%";
-        // progressBarLength += 1;
-        nbTirages = 8;
         resetBtnAchat();
+        nbTirages = 5;
+        sDrop = 10;
+        ssDrop = 2;
         pickACard();
         
     } else if(cpt >= 200 && cpt < 400){ // Wati Tirage
@@ -205,8 +215,10 @@ function tirage(){
         // progressBarLength -= 0.5;
         // progressBar.style.width = progressBarLength +"%";
         // progressBarLength += 0.5;
-        nbTirages = 18;
         resetBtnAchat();
+        nbTirages = 7;
+        sDrop = 20;
+        ssDrop = 7;
         pickACard();
         
     } else if(cpt >= 400 && cpt < 800){ // Tirage de fou malade
@@ -214,11 +226,10 @@ function tirage(){
         cpt -= 400;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         resizeProgressBar();
-        // progressBarLength -= 100/(800-400);
-        // progressBar.style.width = progressBarLength +"%";
-        // progressBarLength += 100/(800-400);
-        nbTirages = 40;
         resetBtnAchat();
+        nbTirages = 7;
+        sDrop = 35;
+        ssDrop = 10;
         pickACard();
         
     } else if(cpt >= 800){ // Tirage de la mort qui tue
@@ -226,12 +237,11 @@ function tirage(){
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         if (cpt < 800){
             resizeProgressBar();
-            // progressBarLength = (cpt % 10)*10;
-            // progressBar.style.width = progressBarLength +"%";
-            // progressBarLength += 10;
         }
-        nbTirages = 90;
         increment();
+        nbTirages = 7;
+        sDrop = 50;
+        ssDrop = 20;
         pickACard();
     }
     
@@ -246,7 +256,15 @@ async function pickACard(){
         document.querySelector(".picked-card").style.visibility = "visible";
         isPicked = 1;        
     } else if(isPicked == 1){ // La carte est retournée
-        var card = "./images/cards/"+getRandomIntInclusive(1, 12)+".png";
+        var drop = getRandomIntInclusive(0, 100);
+        console.log(drop,sDrop, ssDrop);
+        if(drop < ssDrop){
+            var card = "https://media.tenor.com/_KHcT2k8VKYAAAAC/danse-dance.gif";
+        } else if (drop < sDrop){
+            var card = "./images/cards/secrets/"+getRandomIntInclusive(1, 2)+".png";    //////// Nombre de cartes secretes
+        } else {
+            var card = "./images/cards/"+getRandomIntInclusive(1, 15)+".png";           //////// Nombre de cartes a changer en fonction du nb total
+        }
         for(var i = 1057; i >= 0; i-= 200){
             document.querySelector(".picked-card").style.aspectRatio = i+"/1465";
             await delay(5);
@@ -259,11 +277,11 @@ async function pickACard(){
         }
         if(nbTirages > 1){
             nbTirages--;
-            isPicked = 3;
+            isPicked = 2;
         } else {
              isPicked = 100;
         }
-    } else if(isPicked == 3) { // la carte est cachée
+    } else if(isPicked == 2) { // la carte est cachée
         isPicked = 0;           
         pickACard();
     } else { // la carte est cachée
@@ -292,7 +310,6 @@ function inscriptionStyle(){
     document.querySelector(".inscription-frame").style.visibility = "visible";
 }
 
-
 //scrip permettant la connexion
 function connexion(){
     console.log(logPseudo);
@@ -308,4 +325,9 @@ function connexion(){
           },
         body: JSON.stringify({ id: logPseudo, pwd: logPwd })
     }).then(console.log(response))
+}
+
+//Gere toute la partie connexion.
+function collection(){
+    document.querySelector(".collection-frame").style.visibility = "visible";
 }
