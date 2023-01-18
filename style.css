@@ -26,7 +26,6 @@
     display: flex;
     flex-direction: column;
     margin: 12.5% 5%;
-    visibility: hidden;
 }
 .panel-button{
     vertical-align: bottom;
