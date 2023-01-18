@@ -10,42 +10,35 @@ var nbTirages = 0;
 var logPseudo = "";
 var logPwd = "";
 var logPwdConfirmation ="";
+var sDrop = 0;
+var ssDrop = 0;
+var cardsOwned = [];
+var sCardsOwned = [];
+var ssCardsOwned = [];
 
 console.log("hello world le programme");
 document.querySelector(".game").onclick = function(){increment()};
 document.querySelector(".btn-achat").onclick = function(){tirage()};
 document.querySelector(".picked-card-container").onclick = function(){pickACard()};
-document.querySelector("#inscription").onclick = function(){inscriptionStyle()};
+document.querySelector("#collection").onclick = function(){collection()};
+document.querySelector(".collection-partir").onclick = function(){fermerCollection()};
 
-////// Récupère les valeurs dans les champs sans les faires passer par l'url
-document.forms["Inscription"]["Pseudo"].addEventListener("input", function(){
-    logPseudo = this.value;
-});
-document.forms["Inscription"]["pwd"].addEventListener("input", function(){
-    logPwd = this.value;
-});
-document.forms["Inscription"]["pwd-confirmation"].addEventListener("input", function(){
-    logPwdConfirmation = this.value;
-});
+////// Change la couleur de l'ombre tout seul (comme un grand)
+window.i = 0;
+setInterval(() => {
+    window.i += 1;
+    document.querySelector(".game").style.boxShadow = "0 0 75px "+autoHue();
+    document.querySelector(".panel-button").style.boxShadow = "0 0 75px "+autoHue();
+    document.querySelector("#drop-display").style.boxShadow = "0 0 75px "+autoHue();
+    document.querySelector(".btn-achat").style.boxShadow = "0 0 75px "+autoHue();
+}, 200);
 //////
-
-document.querySelector('.btn-inscription').onclick = function(){connexion()};
-document.forms["Inscription"]["pwd-confirmation"].addEventListener("input", function(){
-    if(this.value != document.forms["Inscription"]["pwd"].value){
-        document.querySelector("#msg-inscription").innerHTML = "Par contre frérot fait un effort met le même mot passe";
-        document.querySelector(".btn-inscription").style.visibility = "hidden";
-    } else {
-        document.querySelector("#msg-inscription").innerHTML = "voila bravo fils de pioute clique sur la poutre pour créer ton compte"; 
-        document.querySelector(".form-button").disabled = false;
-        document.querySelector(".btn-inscription").style.visibility = "visible";
-    }
-});
 
 function increment(){
     cpt+=1;
     document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
     progressBar.style.width = progressBarLength+"%";
-    document.querySelector(".game").style.boxShadow = "0 0 80px "+autoHue();
+    // document.querySelector(".game").style.boxShadow = "0 0 80px "+autoHue();
     autoStyleTirage();
     
 }
@@ -73,8 +66,14 @@ function autoStyleTirage(){
     if(cpt<25){
         progressBarLength += 4;
         resetBtnAchat();
+        document.querySelector("#normal").innerHTML = "Communes : 0%";
+        document.querySelector("#secret").innerHTML = "Secrètes : 0%";
+        document.querySelector("#superSecret").innerHTML = "Super Secrètes : 0%";
     }else if(cpt >= 25 && cpt < 50){ // Tirage
         if(cpt==25){resetProgressBar();}
+        document.querySelector("#normal").innerHTML = "Communes : 100%";
+        document.querySelector("#secret").innerHTML = "Secrètes : 0%";
+        document.querySelector("#superSecret").innerHTML = "Super Secrètes : 0%";
         btnAchat.innerHTML = "&#62&#62&#62 Tirage &#60&#60&#60";
         btnAchat.style.backgroundColor = "#B87333";
         progressBar.style.backgroundColor = "#C0C0C0";
@@ -82,6 +81,9 @@ function autoStyleTirage(){
         
     } else if(cpt >= 50 && cpt < 100){ // Super Tirage
         if(cpt==50){resetProgressBar();}
+        document.querySelector("#normal").innerHTML = "Communes : 95%";
+        document.querySelector("#secret").innerHTML = "Secrètes : 5%";
+        document.querySelector("#superSecret").innerHTML = "Super Secrètes : 0%";
         btnAchat.style.backgroundColor = "#C0C0C0";
         progressBar.style.backgroundColor = "#FFD700";
         btnAchat.innerHTML = "&#62&#62&#62 Super Tirage &#60&#60&#60";
@@ -89,6 +91,9 @@ function autoStyleTirage(){
         
     } else if(cpt >= 100 && cpt < 200){ // Méga Super Tirage
         if(cpt==100){resetProgressBar();}
+        document.querySelector("#normal").innerHTML = "Communes : 88%";
+        document.querySelector("#secret").innerHTML = "Secrètes : 10%";
+        document.querySelector("#superSecret").innerHTML = "Super Secrètes : 2%";
         btnAchat.style.backgroundColor = "#FFD700";
         progressBar.style.backgroundColor = "#00b3ff";
         btnAchat.innerHTML = "&#62&#62&#62 Méga Super Tirage &#60&#60&#60";
@@ -96,6 +101,9 @@ function autoStyleTirage(){
         
     } else if(cpt >=200 && cpt < 400){ // Wati Tirage
         if(cpt==200){resetProgressBar();}
+        document.querySelector("#normal").innerHTML = "Communes : 73%";
+        document.querySelector("#secret").innerHTML = "Secrètes : 20%";
+        document.querySelector("#superSecret").innerHTML = "Super Secrètes : 7%";
         btnAchat.style.backgroundColor = "#00b3ff";
         progressBar.style.backgroundColor = "#870b0b";
         btnAchat.innerHTML = "&#62&#62&#62 Wati Tirage &#60&#60&#60";
@@ -103,12 +111,18 @@ function autoStyleTirage(){
         
     } else if(cpt >= 400 && cpt < 800){ // Tirage de fou malade
         if(cpt==400){resetProgressBar();}
+        document.querySelector("#normal").innerHTML = "Communes : 55%";
+        document.querySelector("#secret").innerHTML = "Secrètes : 35%";
+        document.querySelector("#superSecret").innerHTML = "Super Secrètes : 10%";
         btnAchat.style.backgroundColor = "#870b0b";
         progressBar.style.backgroundColor = "#fff";
         btnAchat.innerHTML = "&#62&#62&#62 Tirage de fou malade &#60&#60&#60";
         progressBarLength += 100/(800-400);
         
     } else if(cpt >= 800){ // Tirage de la mort qui tue
+        document.querySelector("#normal").innerHTML = "Communes : 30%";
+        document.querySelector("#secret").innerHTML = "Secrètes : 50%";
+        document.querySelector("#superSecret").innerHTML = "Super Secrètes : 20%";
         btnAchat.style.color = "#fff";
         btnAchat.style.backgroundColor = autoHue();
         progressBar.style.backgroundColor = autoHue();
@@ -163,13 +177,15 @@ function tirage(){
         
     }else if(cpt >= 25  && cpt < 50){ // Tirage
         if(cpt==25){resetProgressBar();}
-        cpt -= 25;     
+        cpt -= 25;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         progressBarLength -= 4;
         progressBar.style.width = progressBarLength +"%";
         progressBarLength += 4;
         nbTirages = 1;
         resetBtnAchat();
+        sDrop = 0;
+        ssDrop = 0;
         pickACard();
         
     } else if(cpt >= 50 && cpt < 100){ // Super Tirage
@@ -177,12 +193,10 @@ function tirage(){
         cpt -= 50;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         resizeProgressBar();
-        // progressBar.style.width = (cpt*4)+"%";
-        // progressBarLength -= 2;
-        // progressBar.style.width = progressBarLength +"%";
-        // progressBarLength += 2;
-        nbTirages = 3;
         resetBtnAchat();
+        nbTirages = 3;
+        sDrop = 5;
+        ssDrop = 0;
         pickACard();
         
     } else if(cpt >= 100 && cpt < 200){ // Méga Super Tirage
@@ -190,11 +204,10 @@ function tirage(){
         cpt -= 100;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         resizeProgressBar();
-        // progressBarLength -= 1;
-        // progressBar.style.width = progressBarLength +"%";
-        // progressBarLength += 1;
-        nbTirages = 8;
         resetBtnAchat();
+        nbTirages = 5;
+        sDrop = 10;
+        ssDrop = 2;
         pickACard();
         
     } else if(cpt >= 200 && cpt < 400){ // Wati Tirage
@@ -202,11 +215,10 @@ function tirage(){
         cpt -= 200;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         resizeProgressBar();
-        // progressBarLength -= 0.5;
-        // progressBar.style.width = progressBarLength +"%";
-        // progressBarLength += 0.5;
-        nbTirages = 18;
         resetBtnAchat();
+        nbTirages = 7;
+        sDrop = 20;
+        ssDrop = 7;
         pickACard();
         
     } else if(cpt >= 400 && cpt < 800){ // Tirage de fou malade
@@ -214,11 +226,10 @@ function tirage(){
         cpt -= 400;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         resizeProgressBar();
-        // progressBarLength -= 100/(800-400);
-        // progressBar.style.width = progressBarLength +"%";
-        // progressBarLength += 100/(800-400);
-        nbTirages = 40;
         resetBtnAchat();
+        nbTirages = 7;
+        sDrop = 35;
+        ssDrop = 10;
         pickACard();
         
     } else if(cpt >= 800){ // Tirage de la mort qui tue
@@ -226,12 +237,11 @@ function tirage(){
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
         if (cpt < 800){
             resizeProgressBar();
-            // progressBarLength = (cpt % 10)*10;
-            // progressBar.style.width = progressBarLength +"%";
-            // progressBarLength += 10;
         }
-        nbTirages = 90;
         increment();
+        nbTirages = 7;
+        sDrop = 50;
+        ssDrop = 20;
         pickACard();
     }
     
@@ -246,7 +256,21 @@ async function pickACard(){
         document.querySelector(".picked-card").style.visibility = "visible";
         isPicked = 1;        
     } else if(isPicked == 1){ // La carte est retournée
-        var card = "./images/cards/"+getRandomIntInclusive(1, 12)+".png";
+        var drop = getRandomIntInclusive(0, 100);
+        console.log(drop,sDrop, ssDrop);
+        if(drop < ssDrop){
+            var nbCard = getRandomIntInclusive(1, 1);
+            var card = "./images/cards/superSecrets/"+nbCard+".png";    //////// Nombre de cartes super secretes
+            ssCardsOwned.push(nbCard);
+        } else if (drop < sDrop){
+            var nbCard = getRandomIntInclusive(1, 2);
+            var card = "./images/cards/secrets/"+nbCard+".png";    //////// Nombre de cartes secretes
+            sCardsOwned.push(nbCard);
+        } else {
+            var nbCard = getRandomIntInclusive(1, 25);
+            var card = "./images/cards/"+nbCard+".png";           //////// Nombre de cartes a changer en fonction du nb total
+            cardsOwned.push(nbCard);
+        }
         for(var i = 1057; i >= 0; i-= 200){
             document.querySelector(".picked-card").style.aspectRatio = i+"/1465";
             await delay(5);
@@ -259,11 +283,11 @@ async function pickACard(){
         }
         if(nbTirages > 1){
             nbTirages--;
-            isPicked = 3;
+            isPicked = 2;
         } else {
              isPicked = 100;
         }
-    } else if(isPicked == 3) { // la carte est cachée
+    } else if(isPicked == 2) { // la carte est cachée
         isPicked = 0;           
         pickACard();
     } else { // la carte est cachée
@@ -287,25 +311,21 @@ function delay(milliseconds){
     });
 }
 
-// affiche la boite de dialogue d'inscription
-function inscriptionStyle(){
-    document.querySelector(".inscription-frame").style.visibility = "visible";
+//Gère toute la partie collection.
+function collection(){
+    document.querySelector(".collection-frame").style.visibility = "visible";
+    document.querySelector(".affichage-collection").innerHTML = "";
+    cardsOwned.forEach(element => {
+        document.querySelector(".affichage-collection").innerHTML += "<div class=\"card\" style=\"order:"+element+";\"><br><img src=\"./images/cards/"+element+".png\" alt=\"c'est l'image\"></div>";
+    });
+    sCardsOwned.forEach(element => {
+        document.querySelector(".affichage-collection").innerHTML += "<div class=\"card\" style=\"order:"+element*100+";\"><br><img src=\"./images/cards/secrets/"+element+".png\" alt=\"c'est l'image\"></div>";
+    });
+    ssCardsOwned.forEach(element => {
+        document.querySelector(".affichage-collection").innerHTML += "<div class=\"card\" style=\"order:"+element*10000+";\"><br><img src=\"./images/cards/superSecrets/"+element+".png\" alt=\"c'est l'image\"></div>";
+    });
 }
 
-
-//scrip permettant la connexion
-function connexion(){
-    console.log(logPseudo);
-    console.log(logPwd);
-    console.log(logPwdConfirmation);
-    console.log("mes couilles");
-    
-
-    fetch('/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-          },
-        body: JSON.stringify({ id: logPseudo, pwd: logPwd })
-    }).then(console.log(response))
+function fermerCollection(){
+    document.querySelector(".collection-frame").style.visibility = "hidden";
 }

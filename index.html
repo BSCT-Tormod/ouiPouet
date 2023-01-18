@@ -9,8 +9,6 @@
         <div class="background">
             <div class="game-container">
                 <div class="panel">
-                    <div class="panel-button" id="inscription">Inscription</div>
-                    <div class="panel-button" id="connecter">Se connecter</div>
                     <div class="panel-button" id="collection">Ma collection</div>
                 </div>
                 <div class="interface">
@@ -21,22 +19,25 @@
                     </div>
                 </div>
                 <div class="panel">
-
+                    <div class="panel-button" id="drop-display">
+                        <a>Drop Rates :</a>
+                        <div class="dropRate" id="normal">Communes : 0%</div>
+                        <div class="dropRate" id="secret">Secrètes : 0%</div>
+                        <div class="dropRate" id="superSecret">Super Secrètes : 0%</div>
+                    </div>
                 </div>
             </div>
             <div class="picked-card-container">    
                 <img class="radial-light" src="./images/radial_light2.png">
                 <img class="picked-card" src="./images/cards/back.png">
             </div>
-            <div class="inscription-frame">
-                <div class="inscription-container">
-                    <form name="Inscription" class="form-inscription" method="post">
-                        <input type="text" name="Pseudo" placeholder="Pseudo" required id="cnx-Pseudo"><br>
-                        <input type="password" name="pwd" placeholder="Mot de Passe" required><br>
-                        <input type="password" name="pwd-confirmation" placeholder="Confirmer le mot de passe" required><br>
-                        <button type="submit" class="form-button" disabled><img src="./images/poutre.png" class="btn-inscription" alt="la poutre"></button>
-                    </form>
-                    <p id="msg-inscription">Créé ton compte et sauve ta progression !</p>
+            <div class="collection-frame">
+                <div class="collection-container">
+                    <div class="collection-header">
+                        <h2>Ma putain de collection</h2>
+                        <p class="collection-partir">se barrer d'ici</p>
+                    </div>
+                    <div class="affichage-collection"></div>
                 </div>
             </div>
             <div class="progress-bar"></div>
