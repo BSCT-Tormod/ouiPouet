@@ -23,6 +23,11 @@ document.querySelector(".picked-card-container").onclick = function(){pickACard(
 document.querySelector("#collection").onclick = function(){collection()};
 document.querySelector(".collection-partir").onclick = function(){fermerCollection()};
 
+////// rompiche
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 ////// Change la couleur de l'ombre tout seul (comme un grand)
 window.i = 0;
 setInterval(() => {
@@ -40,7 +45,14 @@ function increment(){
     progressBar.style.width = progressBarLength+"%";
     // document.querySelector(".game").style.boxShadow = "0 0 80px "+autoHue();
     autoStyleTirage();
-    
+    autoStyleImage();    
+}
+
+async function autoStyleImage(){
+    var heightImg = 60;
+    document.querySelector(".clicker").style.height = heightImg+"%";
+    await sleep(20);
+    document.querySelector(".clicker").style.height = "70%";
 }
 
 // change la couleur d'un element en suivant un cycle rgb complet
