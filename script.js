@@ -34,9 +34,7 @@ setInterval(() => {
     window.i += 1;
     document.querySelector(".game").style.boxShadow = "0 0 75px "+autoHue();
     document.querySelector("#collection").style.boxShadow = "0 0 75px "+autoHue();
-    document.querySelector("#sauvegarde").style.boxShadow = "0 0 75px "+autoHue();
-    document.querySelector("#charger").style.boxShadow = "0 0 75px "+autoHue();
-    document.querySelector("#load").style.boxShadow = "0 0 75px "+autoHue();
+    document.querySelector("#save").style.boxShadow = "0 0 75px "+autoHue();
     document.querySelector("#drop-display").style.boxShadow = "0 0 75px "+autoHue();
     document.querySelector(".btn-achat").style.boxShadow = "0 0 75px "+autoHue();
 }, 200);
@@ -299,11 +297,11 @@ async function pickACard(){
     } else if(isPicked == 1){ // La carte est retournée
         var drop = getRandomIntInclusive(0, 100);
         if(drop < ssDrop){
-            var nbCard = getRandomIntInclusive(1, 1);
+            var nbCard = getRandomIntInclusive(1, 3);
             var card = "./images/cards/superSecrets/"+nbCard+".png";    //////// Nombre de cartes super secretes
             ssCardsOwned.push(nbCard);
         } else if (drop < sDrop){
-            var nbCard = getRandomIntInclusive(1, 2);
+            var nbCard = getRandomIntInclusive(1, 10);
             var card = "./images/cards/secrets/"+nbCard+".png";    //////// Nombre de cartes secretes
             sCardsOwned.push(nbCard);
         } else {
@@ -374,9 +372,9 @@ function fermerCollection(){
 document.querySelector("#sauvegarde").onclick = function (){
     var data = "Pouets:"+cpt+";Cartes:"+cardsOwned+";Cartes_s:"+sCardsOwned+";Cartes_ss:"+ssCardsOwned+";";
     data = btoa(data);
-    document.cookie ="Data ="+data+" ; expires=Thu, 01 jan 2030 12:12:12 UTC";
+    if(checkCookie("Cokie")){document.cookie ="Data ="+data+" ; expires=Thu, 01 jan 2030 12:12:12 UTC";}
     navigator.clipboard.writeText(data);
-    alert("Les données sont dans le presse papier")
+    alert("Les données sont dans le presse papier");
 };
 
 // cette fonction permet de charger les données de sauvegardes depuis le cookie
@@ -390,6 +388,19 @@ document.querySelector("#charger").onclick = function (){
     data.forEach(element => recup(element));
     document.querySelector("#load-input").value = "";
 }
+document.querySelector("#load-input").addEventListener("keypress",function (event){
+    if (event.key==='Enter'){
+        event.preventDefault();
+        if(document.querySelector("#load-input").value !== ""){
+            var data = atob(document.querySelector("#load-input").value).split(";");
+        } else {
+        var data = atob(getCookie("Data")).split(";");
+        }
+        console.log(data)
+        data.forEach(element => recup(element));
+        document.querySelector("#load-input").value = "";
+    }
+});
 
 // Fonction permettant de recupérer la valeur d'un cookie
 function getCookie(cname) {
@@ -407,6 +418,20 @@ function getCookie(cname) {
     }
     return "";
 }
+//verifie si un cokie existe
+function checkCookie(cookieName) {
+    var cookies = document.cookie.split(";");
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i];
+      var cookieArray = cookie.split("=");
+      var name = cookieArray[0];
+      var value = cookieArray[1];
+      if (name.trim() === cookieName) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 //recupere les données de sauvegarde pour les mettre dans la partie
 function recup(element){
@@ -428,3 +453,10 @@ function recup(element){
         element.split(":")[1].split(",").forEach(element => ssCardsOwned.push(element));
     }
 }
+
+// affichage pop up cokie
+if(!checkCookie("Cokie")){
+    document.querySelector(".cookie-pop-up").style.visibility = "visible";
+}
+document.querySelector("#cokie-non").onclick = function(){document.querySelector(".cookie-pop-up").style.visibility = "hidden";};
+document.querySelector("#cokie-oui").onclick = function(){document.querySelector(".cookie-pop-up").style.visibility = "hidden"; document.cookie="Cokie = casse toi de la ! ; expires=Thu, 01 jan 2030 12:12:12 UTC"};

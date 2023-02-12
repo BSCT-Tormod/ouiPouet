@@ -22,10 +22,10 @@
 }
 .panel{
     width: 25%;
-    height: 50%;
+    height: 80%;
     display: flex;
     flex-direction: column;
-    margin: 12.5% 5%;
+    margin: 5% 5%;
     justify-content: space-between;
 }
 .panel-button{
@@ -42,8 +42,12 @@
     flex-direction: column;
     gap: 10%;
 }
+#load-input{
+    width: 75%;
+    margin-left: 12.5%;
+}
 #drop-display{
-    height: 100%;
+    height: 40%;
     padding: 10% 0;
     margin-top: 25%;
 }
@@ -250,4 +254,41 @@
 .collection-partir{
     font-family: 'Comic sans ms';
     color: #fff;
+}
+.cookie-pop-up{
+    position: absolute;
+    width: 65%;
+    height: 65%;
+    margin: 5.5% 12.5%;
+    padding: 2% 5%;
+    display: flex;
+    flex-direction: column;
+    visibility: hidden;
+    justify-content: space-between;
+    overflow: hidden;
+    background-color: #d69b1b;
+    font-family: 'Comic sans ms';
+
+}
+.styled {
+    height: 100%;
+    border: 0;
+    line-height: 2.5;
+    padding: 0 20px;
+    font-size: 1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 10px;
+    background-color: rgba(220, 0, 0, 1);
+    background-image: linear-gradient(to top left, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2) 30%, rgba(0, 0, 0, 0));
+    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, 0.6), inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+}
+
+.styled:hover {
+    background-color: rgba(255, 0, 0, 1);
+}
+
+.styled:active {
+    box-shadow: inset -2px -2px 3px rgba(255, 255, 255, 0.6), inset 2px 2px 3px rgba(0, 0, 0, 0.6);
 }
