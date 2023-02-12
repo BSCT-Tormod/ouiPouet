@@ -33,7 +33,10 @@ window.i = 0;
 setInterval(() => {
     window.i += 1;
     document.querySelector(".game").style.boxShadow = "0 0 75px "+autoHue();
-    document.querySelector(".panel-button").style.boxShadow = "0 0 75px "+autoHue();
+    document.querySelector("#collection").style.boxShadow = "0 0 75px "+autoHue();
+    document.querySelector("#sauvegarde").style.boxShadow = "0 0 75px "+autoHue();
+    document.querySelector("#charger").style.boxShadow = "0 0 75px "+autoHue();
+    document.querySelector("#load").style.boxShadow = "0 0 75px "+autoHue();
     document.querySelector("#drop-display").style.boxShadow = "0 0 75px "+autoHue();
     document.querySelector(".btn-achat").style.boxShadow = "0 0 75px "+autoHue();
 }, 200);
@@ -43,10 +46,23 @@ function increment(){
     cpt+=1;
     document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
     progressBar.style.width = progressBarLength+"%";
-    // document.querySelector(".game").style.boxShadow = "0 0 80px "+autoHue();
     autoStyleTirage();
-    autoStyleImage();    
+    autoStyleImage();
 }
+
+(function( d ) {
+    'use strict';
+     var count = 0,
+         audio = d.getElementById( 'audioP' ).getElementsByTagName( 'audio' );
+     d.querySelector( '.game' ).addEventListener( 'click',
+        function() {
+            audio[ count].play();
+            count ++;
+       if ( count > 14 ) {
+            count = 0; 
+           }          
+          }, false );
+ }( document ));
 
 async function autoStyleImage(){
     var heightImg = 60;
@@ -88,6 +104,8 @@ function autoStyleTirage(){
         document.querySelector("#superSecret").innerHTML = "Super Secrètes : 0%";
         btnAchat.innerHTML = "&#62&#62&#62 Tirage &#60&#60&#60";
         btnAchat.style.backgroundColor = "#B87333";
+        btnAchat.style.color = "#FFF";
+        btnAchat.style.border = "5px solid #fff";
         progressBar.style.backgroundColor = "#C0C0C0";
         progressBarLength += 4;
         
@@ -99,6 +117,8 @@ function autoStyleTirage(){
         btnAchat.style.backgroundColor = "#C0C0C0";
         progressBar.style.backgroundColor = "#FFD700";
         btnAchat.innerHTML = "&#62&#62&#62 Super Tirage &#60&#60&#60";
+        btnAchat.style.color = "#FFF";
+        btnAchat.style.border = "5px solid #fff";
         progressBarLength += 100/(100-50);
         
     } else if(cpt >= 100 && cpt < 200){ // Méga Super Tirage
@@ -109,6 +129,8 @@ function autoStyleTirage(){
         btnAchat.style.backgroundColor = "#FFD700";
         progressBar.style.backgroundColor = "#00b3ff";
         btnAchat.innerHTML = "&#62&#62&#62 Méga Super Tirage &#60&#60&#60";
+        btnAchat.style.color = "#FFF";
+        btnAchat.style.border = "5px solid #fff";
         progressBarLength += 100/(200-100);
         
     } else if(cpt >=200 && cpt < 400){ // Wati Tirage
@@ -119,6 +141,8 @@ function autoStyleTirage(){
         btnAchat.style.backgroundColor = "#00b3ff";
         progressBar.style.backgroundColor = "#870b0b";
         btnAchat.innerHTML = "&#62&#62&#62 Wati Tirage &#60&#60&#60";
+        btnAchat.style.color = "#FFF";
+        btnAchat.style.border = "5px solid #fff";
         progressBarLength += 100/(400-200);
         
     } else if(cpt >= 400 && cpt < 800){ // Tirage de fou malade
@@ -129,6 +153,8 @@ function autoStyleTirage(){
         btnAchat.style.backgroundColor = "#870b0b";
         progressBar.style.backgroundColor = "#fff";
         btnAchat.innerHTML = "&#62&#62&#62 Tirage de fou malade &#60&#60&#60";
+        btnAchat.style.color = "#FFF";
+        btnAchat.style.border = "5px solid #fff";
         progressBarLength += 100/(800-400);
         
     } else if(cpt >= 800){ // Tirage de la mort qui tue
@@ -138,9 +164,9 @@ function autoStyleTirage(){
         btnAchat.style.color = "#fff";
         btnAchat.style.backgroundColor = autoHue();
         progressBar.style.backgroundColor = autoHue();
-        btnAchat.innerHTML = "&#62&#62&#62 Tirage de la mort qui tue &#60&#60&#60";
-        
-        
+        btnAchat.style.color = "#FFF";
+        btnAchat.style.border = "5px solid #fff";
+        btnAchat.innerHTML = "&#62&#62&#62 Tirage de la mort qui tue &#60&#60&#60";        
     }
 }
 
@@ -153,10 +179,16 @@ function resetProgressBar(){
 }
 
 function resizeProgressBar(){
-    if(cpt < 50){
+    if(cpt < 25){
         progressBarLength = (cpt*4);
         progressBar.style.width = progressBarLength+"%";
         progressBarLength += 4;
+    } else if(cpt < 50){
+        cpt -=25;
+        progressBarLength = (cpt*4);
+        progressBar.style.width = progressBarLength+"%";
+        progressBarLength += 4;
+        cpt += 25;
     } else if(cpt < 100){
         progressBarLength = (cpt*8);
         progressBar.style.width = progressBarLength+"%";
@@ -183,7 +215,6 @@ function resetBtnAchat(){
 
 // enlève des pouets et tire une carte
 function tirage(){
-    console.log("achat effectué");
     document.querySelector(".pouet-display");
     if(cpt<10){
         
@@ -191,11 +222,9 @@ function tirage(){
         if(cpt==25){resetProgressBar();}
         cpt -= 25;
         document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
-        progressBarLength -= 4;
-        progressBar.style.width = progressBarLength +"%";
-        progressBarLength += 4;
-        nbTirages = 1;
+        resizeProgressBar();
         resetBtnAchat();
+        nbTirages = 1;
         sDrop = 0;
         ssDrop = 0;
         pickACard();
@@ -269,7 +298,6 @@ async function pickACard(){
         isPicked = 1;        
     } else if(isPicked == 1){ // La carte est retournée
         var drop = getRandomIntInclusive(0, 100);
-        console.log(drop,sDrop, ssDrop);
         if(drop < ssDrop){
             var nbCard = getRandomIntInclusive(1, 1);
             var card = "./images/cards/superSecrets/"+nbCard+".png";    //////// Nombre de cartes super secretes
@@ -340,4 +368,63 @@ function collection(){
 
 function fermerCollection(){
     document.querySelector(".collection-frame").style.visibility = "hidden";
+}
+
+////// Partie sauvegarde
+document.querySelector("#sauvegarde").onclick = function (){
+    var data = "Pouets:"+cpt+";Cartes:"+cardsOwned+";Cartes_s:"+sCardsOwned+";Cartes_ss:"+ssCardsOwned+";";
+    data = btoa(data);
+    document.cookie ="Data ="+data+" ; expires=Thu, 01 jan 2030 12:12:12 UTC";
+    navigator.clipboard.writeText(data);
+    alert("Les données sont dans le presse papier")
+};
+
+// cette fonction permet de charger les données de sauvegardes depuis le cookie
+document.querySelector("#charger").onclick = function (){
+    if(document.querySelector("#load-input").value !== ""){
+        var data = atob(document.querySelector("#load-input").value).split(";");
+    } else {
+    var data = atob(getCookie("Data")).split(";");
+    }
+    console.log(data)
+    data.forEach(element => recup(element));
+    document.querySelector("#load-input").value = "";
+}
+
+// Fonction permettant de recupérer la valeur d'un cookie
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+//recupere les données de sauvegarde pour les mettre dans la partie
+function recup(element){
+    if(element.split(":")[0]=="Pouets"){
+        cpt = element.split(":")[1] -1;
+        cpt+=1;
+        document.querySelector(".pouet-display").innerHTML = cpt + " Pouets !";
+        resizeProgressBar();
+        resetBtnAchat();
+        autoStyleTirage();
+    } else if(element.split(":")[0]=="Cartes" &&  element.split(":")[1] !== ""){
+        cardsOwned = [];
+        element.split(":")[1].split(",").forEach(element => cardsOwned.push(element));
+    } else if(element.split(":")[0]=="Cartes_s" &&  element.split(":")[1] !== ""){
+        sCardsOwned = [];
+        element.split(":")[1].split(",").forEach(element => sCardsOwned.push(element));
+    } else if(element.split(":")[0]=="Cartes_ss" &&  element.split(":")[1] !== ""){
+        ssCardsOwned = [];
+        element.split(":")[1].split(",").forEach(element => ssCardsOwned.push(element));
+    }
 }
