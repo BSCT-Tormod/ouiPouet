@@ -268,6 +268,7 @@
     overflow: hidden;
     background-color: #d69b1b;
     font-family: 'Comic sans ms';
+    overflow-y: auto;
 
 }
 .styled {
