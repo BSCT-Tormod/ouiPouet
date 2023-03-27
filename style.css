@@ -84,7 +84,6 @@
         visibility: hidden;
         justify-content: center;
         overflow: hidden;
-        margin-top: 50%;
     }
     .picked-card{
         position: relative;
