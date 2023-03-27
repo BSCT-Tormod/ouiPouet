@@ -299,15 +299,15 @@ async function pickACard(){
         if(drop < ssDrop){
             var nbCard = getRandomIntInclusive(1, 3);
             var card = "./images/cards/superSecrets/"+nbCard+".png";    //////// Nombre de cartes super secretes
-            ssCardsOwned.push(nbCard);
+            if(!ssCardsOwned.includes(nbCard)){ssCardsOwned.push(nbCard);}
         } else if (drop < sDrop){
             var nbCard = getRandomIntInclusive(1, 10);
             var card = "./images/cards/secrets/"+nbCard+".png";    //////// Nombre de cartes secretes
-            sCardsOwned.push(nbCard);
+            if(!sCardsOwned.includes(nbCard)){sCardsOwned.push(nbCard);}
         } else {
             var nbCard = getRandomIntInclusive(1, 25);
             var card = "./images/cards/"+nbCard+".png";           //////// Nombre de cartes a changer en fonction du nb total
-            cardsOwned.push(nbCard);
+            if(!cardsOwned.includes(nbCard)){cardsOwned.push(nbCard);}
         }
         for(var i = 1057; i >= 0; i-= 200){
             document.querySelector(".picked-card").style.aspectRatio = i+"/1465";
@@ -333,6 +333,7 @@ async function pickACard(){
         document.querySelector(".picked-card").style.visibility = "hidden";
         document.querySelector(".radial-light").style.visibility = "hidden";
         isPicked = 0;        
+        save();
     }
 }
 
@@ -369,16 +370,24 @@ function fermerCollection(){
 }
 
 ////// Partie sauvegarde
-document.querySelector("#sauvegarde").onclick = function (){
+document.querySelector("#sauvegarde").onclick = function () { 
+    save();
+    alert("Les données sont dans le presse papier");
+};
+
+function save(){
     var data = "Pouets:"+cpt+";Cartes:"+cardsOwned+";Cartes_s:"+sCardsOwned+";Cartes_ss:"+ssCardsOwned+";";
     data = btoa(data);
     if(checkCookie("Cokie")){document.cookie ="Data ="+data+" ; expires=Thu, 01 jan 2030 12:12:12 UTC";}
     navigator.clipboard.writeText(data);
-    alert("Les données sont dans le presse papier");
-};
+}
 
 // cette fonction permet de charger les données de sauvegardes depuis le cookie
 document.querySelector("#charger").onclick = function (){
+    load();
+}
+addEventListener("load",function(){load();});
+function load(){
     if(document.querySelector("#load-input").value !== ""){
         var data = atob(document.querySelector("#load-input").value).split(";");
     } else {
@@ -444,13 +453,13 @@ function recup(element){
         autoStyleTirage();
     } else if(element.split(":")[0]=="Cartes" &&  element.split(":")[1] !== ""){
         cardsOwned = [];
-        element.split(":")[1].split(",").forEach(element => cardsOwned.push(element));
+        element.split(":")[1].split(",").forEach((element) => {if(!cardsOwned.includes(element)){cardsOwned.push(element);}});
     } else if(element.split(":")[0]=="Cartes_s" &&  element.split(":")[1] !== ""){
         sCardsOwned = [];
-        element.split(":")[1].split(",").forEach(element => sCardsOwned.push(element));
+        element.split(":")[1].split(",").forEach((element) => {if(!sCardsOwned.includes(element)){sCardsOwned.push(element);}});
     } else if(element.split(":")[0]=="Cartes_ss" &&  element.split(":")[1] !== ""){
         ssCardsOwned = [];
-        element.split(":")[1].split(",").forEach(element => ssCardsOwned.push(element));
+        element.split(":")[1].split(",").forEach((element) => {if(!ssCardsOwned.includes(element)){ssCardsOwned.push(element);}});
     }
 }
 
